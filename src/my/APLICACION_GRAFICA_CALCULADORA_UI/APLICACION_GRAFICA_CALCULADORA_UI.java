@@ -373,10 +373,10 @@ public class APLICACION_GRAFICA_CALCULADORA_UI extends javax.swing.JFrame {
         jPanel1.add(btn_sin, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 100, 50));
 
         btn_sqrt.setBackground(new java.awt.Color(76, 76, 76));
-        btn_sqrt.setFont(new java.awt.Font("SansSerif", 1, 17)); // NOI18N
+        btn_sqrt.setFont(new java.awt.Font("SansSerif", 1, 24)); // NOI18N
         btn_sqrt.setForeground(new java.awt.Color(255, 255, 255));
         btn_sqrt.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/BOTON LARGO.jpg"))); // NOI18N
-        btn_sqrt.setText("n√x (x,1/n)");
+        btn_sqrt.setText("(n√x) ");
         btn_sqrt.setBorder(null);
         btn_sqrt.setFocusPainted(false);
         btn_sqrt.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -389,10 +389,10 @@ public class APLICACION_GRAFICA_CALCULADORA_UI extends javax.swing.JFrame {
         jPanel1.add(btn_sqrt, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 55, 100, 50));
 
         btn_potencia.setBackground(new java.awt.Color(76, 76, 76));
-        btn_potencia.setFont(new java.awt.Font("SansSerif", 1, 20)); // NOI18N
+        btn_potencia.setFont(new java.awt.Font("SansSerif", 1, 24)); // NOI18N
         btn_potencia.setForeground(new java.awt.Color(255, 255, 255));
         btn_potencia.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/BOTON LARGO.jpg"))); // NOI18N
-        btn_potencia.setText("x^n (x,n)");
+        btn_potencia.setText("(x^n)");
         btn_potencia.setBorder(null);
         btn_potencia.setFocusPainted(false);
         btn_potencia.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -538,28 +538,28 @@ public class APLICACION_GRAFICA_CALCULADORA_UI extends javax.swing.JFrame {
 
     private void btn_sinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_sinActionPerformed
         // SENO
-        escribirNumero("Math.sin((Math.PI/180)*");
+        escribirNumero("sin(");
        
     }//GEN-LAST:event_btn_sinActionPerformed
 
     private void btn_sqrtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_sqrtActionPerformed
         // RAIZ ENESIMA
-        escribirNumero("Math.pow(");
+        escribirNumero("√");
     }//GEN-LAST:event_btn_sqrtActionPerformed
 
     private void btn_potenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_potenciaActionPerformed
         // POTENCIA ENESIMA
-        escribirNumero("Math.pow(");
+        escribirNumero("^");
     }//GEN-LAST:event_btn_potenciaActionPerformed
 
     private void btn_cosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_cosActionPerformed
         // COSENO
-        escribirNumero("Math.cos((Math.PI/180)*");
+        escribirNumero("cos(");
     }//GEN-LAST:event_btn_cosActionPerformed
 
     private void btn_tanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_tanActionPerformed
         // TANGENTE
-        escribirNumero("Math.tan((Math.PI/180)*");
+        escribirNumero("tan(");
     }//GEN-LAST:event_btn_tanActionPerformed
 
     private void btn_clearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_clearActionPerformed
@@ -588,8 +588,14 @@ public class APLICACION_GRAFICA_CALCULADORA_UI extends javax.swing.JFrame {
         // IGUAL
         
         try{
-          String resultadoS = se.eval(operacion.getText()).toString();
-          resultado.setText(resultadoS);
+            String conversor = CONVERSOR_OPERACIONES(operacion.getText());
+            
+          String resultado2 = se.eval(conversor).toString();
+          
+            System.out.println(conversor);
+            System.out.println(resultado2);
+            
+          resultado.setText(resultado2);
           
         }catch(Exception e){
             operacion.setText("ERROR");
@@ -710,7 +716,103 @@ public class APLICACION_GRAFICA_CALCULADORA_UI extends javax.swing.JFrame {
         operacion.setText(operacion.getText()+digito);
     }
     
+    //CAMBIAR DE ASPECTO VISUAL A OPERACION INTERNA
+    public  String CONVERSOR_OPERACIONES(String Operacion){
+        
+        String nuevaOp = "";
+        String caracter = "";
+        
+        String antes = "";
+        String despues = "";
+        
+        String auxiliar1 = "";
+        String auxiliar2 = "";
+        
+        int posicionParentesisAbierto = 0;
+        int posicionParentesisCerrado = 0;
+        int posicionPrueba = 0;
+        int contadorPa = 0;
+        
+        nuevaOp = Operacion.replace("sin(", "Math.sin((Math.PI/180)*");
+        
+        nuevaOp = nuevaOp.replace("cos(", "Math.cos((Math.PI/180)*");
+        
+        nuevaOp = nuevaOp.replace("tan(", "Math.tan((Math.PI/180)*");
+        
+      
+        for(int x = 0; x < Operacion.length(); x++){
+           
+            
+                caracter= Operacion.substring(x,x+1);
+                
+                
+                if(caracter.compareTo("(") == 0){
+                    posicionPrueba = x;
+                }
+                
+                
+                if(caracter.compareTo("^") == 0 ){
+                    
+                    if(posicionPrueba < x){
+                        
+                        posicionParentesisAbierto = posicionPrueba;
+                        
+                    }
+
+                    nuevaOp = nuevaOp.replace("^", ",");
+                    
+                    antes = nuevaOp.substring(0, posicionParentesisAbierto);
+                    despues = nuevaOp.substring(posicionParentesisAbierto+1, nuevaOp.length());
+                    
+                    nuevaOp = antes + "Math.pow(" + despues;
+                  
+     
+                }
+               
+               if(caracter.compareTo("√")==0){
+                   
+                   if(posicionPrueba < x){
+                        
+                        posicionParentesisAbierto = posicionPrueba;
+                        
+                    }
+                 
+                    
+                    for(int y = x; y<nuevaOp.length(); y++){
+                        caracter= nuevaOp.substring(y,y+1);
+                        
+                        if(caracter.compareTo(")")==0){
+                            contadorPa++;
+                            
+                            if(contadorPa == 1){
+                                posicionParentesisCerrado = y;
+                            }
+                            
+                        }
+                    }
+                    
+                    antes = nuevaOp.substring(0, posicionParentesisAbierto);
+                    
+                    auxiliar2 = nuevaOp.substring(x+1, posicionParentesisCerrado);
+                    
+                    auxiliar1 = nuevaOp.substring(posicionParentesisAbierto+1, x);
+                   
+                    
+                    despues = nuevaOp.substring(posicionParentesisCerrado, nuevaOp.length());
+                    
+                    
+                    nuevaOp= antes + "Math.pow(" + auxiliar2 + ", 1/" + auxiliar1  + despues;
+                    
+                }    
+                
+           }  
+        
+        return nuevaOp;
+                 
+    }
+    
    
+    
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
